@@ -7,6 +7,7 @@
 
 namespace Drupal\http_response_headers\EventSubscriber;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,6 +18,23 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class AddHTTPHeaders implements EventSubscriberInterface {
 
   /**
+   * The entity storage manager for response_header entities.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $entityManager;
+
+  /**
+   * Constructs a new Google Tag response subscriber.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The config factory service.
+   */
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $this->entityManager = \Drupal::entityTypeManager()->getStorage('response_header');
+  }
+
+  /**
    * Sets extra HTTP headers.
    */
   public function onRespond(FilterResponseEvent $event) {
@@ -24,35 +42,35 @@ class AddHTTPHeaders implements EventSubscriberInterface {
       return;
     }
     $response = $event->getResponse();
-    $config = \Drupal::config('http_response_headers.settings');
 
-    // Security HTTP headers.
-    $security = $config->get('security');
-    foreach ($security as $param => $value) {
-      if (!empty($value)) {
-        $response->headers->set($param, $value);
-      }
-    }
-
-    $authenticated_only = $config->get('performance_authenticated_only');
-    $current_user = \Drupal::currentUser();
-    // Performance HTTP headers.
-    if ($authenticated_only && !$current_user->isAnonymous()) {
-      $performance = $config->get('performance');
-      foreach ($performance as $param => $value) {
-        if (!empty($value)) {
-          $response->headers->set($param, $value);
+    $headers = $this->entityManager->loadMultiple();
+    if (!empty($headers)) {
+      foreach ($headers as $key => $header) {
+        if (!empty($header->get('name'))) {
+          // @TODO Add context rules to header groups to allow
+          // certain groups to only be applied in certain contexts.
+          if (!empty($header->get('value'))) {
+            // Must remove the existing header if settings a new value.
+            if ($response->headers->has($header->get('name'))) {
+              \Drupal::logger('http_response_headers')->notice('header removed the readded' . $header->get('name'));
+              $response->headers->remove($header->get('name'));
+            }
+            $response->headers->set($header->get('name'), $header->get('value'));
+          }
+          else {
+            \Drupal::logger('http_response_headers')->notice('header removed' . $header->get('name'));
+            $response->headers->remove($header->get('name'));
+          }
         }
       }
     }
-
   }
 
   /**
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE][] = ['onRespond'];
+    $events[KernelEvents::RESPONSE][] = ['onRespond', -100];
     return $events;
   }
 
