@@ -97,6 +97,7 @@ function http_response_headers_get_all_headers() {
     'X-Powered-By',
     'X-UA-Compatible',
     'X-Permitted-Cross-Domain-Policies',
+    'Surrogate-Control',
   );
 
   // Map key.
