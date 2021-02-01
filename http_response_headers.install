@@ -75,14 +75,12 @@ function http_response_headers_schema() {
         'description' => 'Contains a list of paths on which to include/exclude the rule, depending on "visibility" setting.',
       ),
       'types' => array(
-        'type' => 'varchar',
-        'length' => 64,
+        'type' => 'text',
         'not null' => FALSE,
         'description' => 'Content types',
       ),
       'roles' => array(
-        'type' => 'varchar',
-        'length' => 64,
+        'type' => 'text',
         'not null' => FALSE,
         'description' => 'User roles',
       ),
@@ -113,4 +111,23 @@ function http_response_headers_uuninstall() {
   // Remove variables created.
   variable_del('http_response_headers_allowed_headers');
   variable_del('http_response_headers_exclude_pages');
+}
+
+/**
+ * Convert "types" and "roles" db columns from varchar to text.
+ */
+function http_response_headers_update_7001() {
+  $types_new_spec = array(
+    'type' => 'text',
+    'not null' => FALSE,
+    'description' => 'Content types',
+  );
+  db_change_field('http_response_headers', 'types', 'types', $types_new_spec);
+
+  $roles_new_spec = array(
+    'type' => 'text',
+    'not null' => FALSE,
+    'description' => 'User roles',
+  );
+  db_change_field('http_response_headers', 'roles', 'roles', $roles_new_spec);
 }
