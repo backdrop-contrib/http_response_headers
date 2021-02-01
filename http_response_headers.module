@@ -399,7 +399,7 @@ function http_response_headers_cache_reset() {
  *   String of formatted date time.
  */
 function http_response_headers_expires_callback($seconds = 0) {
-  return gmdate(DATE_RFC1123, time() + $seconds);
+  return gmdate(DATE_RFC1123, strtotime('+' . $seconds . ' second'));
 }
 
 /**
@@ -412,7 +412,7 @@ function http_response_headers_expires_callback($seconds = 0) {
  *   String of formatted date time.
  */
 function http_response_headers_last_modified_callback($seconds = 0) {
-  return gmdate(DATE_RFC1123, time() + $seconds);
+  return gmdate(DATE_RFC1123, strtotime('+' . $seconds . ' second'));
 }
 
 /**
