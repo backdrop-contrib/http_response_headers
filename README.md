@@ -76,6 +76,8 @@ MAINTAINERS
 
  * Vijaya Chandran Mani (vijaycs85) - https://www.drupal.org/u/vijaycs85
  * Minnur Yunusov (minnur) - https://www.drupal.org/u/minnur
+ * Drew Webber (mcdruid) - https://www.drupal.org/u/mcdruid
+ * Malachy McConnell (mmcconnell) - https://www.drupal.org/u/mmcconnell
 
 Supporting organization:
 
