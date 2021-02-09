@@ -2,5 +2,9 @@ name = HTTP Response Headers
 description = Allows to customize HTTP response headers.
 core = 7.x
 dependencies[] = ctools
+
+; pending https://www.drupal.org/project/ctools/issues/3196169 fix
+test_dependencies[] = views
+
 files[] = http_response_headers.test
 files[] = includes/http_response_headers.rule.inc
