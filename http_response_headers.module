@@ -412,7 +412,10 @@ function http_response_headers_expires_callback($seconds = 0) {
  *   String of formatted date time.
  */
 function http_response_headers_last_modified_callback($seconds = 0) {
-  return gmdate(DATE_RFC7231, strtotime('+' . $seconds . ' second'));
+  // Regardless of the header value passed to this callback, the Last-Modified
+  // header should reflect REQUEST_TIME unless the response is from cache -
+  // which core handles by itself in drupal_serve_page_from_cache().
+  return gmdate(DATE_RFC7231, REQUEST_TIME);
 }
 
 /**

@@ -209,6 +209,8 @@ class HttpResponseHeadersUITestCase extends DrupalWebTestCase {
     // Check the Last-Modified header matched the Date header. This is somewhat
     // reliant on the webserver, but most seem to follow the spec.
     // @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
+    // N.B. this test is only valid for an uncached response.
+    // @see http_response_headers_last_modified_callback()
     $this->assertEqual($headers[strtolower($header)], $headers[strtolower('Date')], 'Last-Modified header matched the Date response header.');
   }
 
