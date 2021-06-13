@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * HTTP response headers drush command.
@@ -138,9 +137,9 @@ function drush_http_response_headers_http_header_add_validate($machine_name, $he
   }
 
   // Validate header.
-  $allowed_headers = variable_get('http_response_headers_allowed_headers');
+  $allowed_headers = config_get('http_response_headers.settings', 'allowed_headers');
   if (!in_array($header, $allowed_headers)) {
-    return drush_set_error(t('@header is not a valid header. Try "drush vget http_response_headers_allowed_headers" to see list of allowed headers to create header rules.', array('@header' => $header)));
+    return drush_set_error(t('@header is not a valid header. Try "drush vget allowed_headers" to see list of allowed headers to create header rules.', array('@header' => $header)));
   }
 
   if (http_response_headers_rule_load($machine_name)) {
@@ -164,7 +163,7 @@ function drush_http_response_headers_http_header_add_validate($machine_name, $he
  *   A string header value.
  */
 function drush_http_response_headers_http_header_add($machine_name, $header, $header_value) {
-  $description = drush_get_option('description', NULL) ? trim(check_plain(drush_get_option('description', NULL))) : trim(check_plain($machine_name));
+  $description = drush_get_option('description', NULL)?trim(check_plain(drush_get_option('description', NULL))) : trim(check_plain($machine_name));
   $pages = drush_get_option('pages', NULL);
 
   $rule = new HttpResponseHeadersRule();
@@ -264,7 +263,7 @@ function drush_http_response_headers_http_header_del() {
     $options[] = $name;
   }
   if (drush_get_option('exact', FALSE)) {
-    $options = in_array($args[0], $options) ? array($args[0]) : array();
+    $options = in_array($args[0], $options)?array($args[0]) : array();
   }
 
   if (count($options) == 0) {

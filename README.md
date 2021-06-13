@@ -1,84 +1,70 @@
-CONTENTS OF THIS FILE
----------------------
+HTTP Response Headers
+=====================
 
- * Introduction
- * Requirements
- * Recommended Modules
- * Installation
- * Configuration
- * Known Issues/Problems
- * Maintainers
+The HTTP Response Headers module allows to set HTTP response headers (both standard and non-standard) on pages by various visibility rule settings. Headers can be restricted by path, content type and user role.
 
+This module contains a sub-module, HTTP Response Headers UI, that lets you add, remove, and edit headers. Typically you would enable this module, perform your configuration, then disable it for day-to-day use.
 
-INTRODUCTION
+Installation
 ------------
 
-The HTTP Response Headers module allows to set HTTP response headers (both
-standard and non-standard) on pages by various visibility rule settings.
-Currently, the headers can be set by path, content type and user role.
+- Install this module using [the official Backdrop CMS instructions](https://backdropcms.org/guide/modules).
 
- * For a full description of the module, visit the project page:
-   https://www.drupal.org/project/http_response_headers
+- Visit the configuration page under Administration > Configuration > System >
+  HTTP Response Headers (`admin/config/system/http_response_headers`) to enable headers.
+  
+- To set specific headers and set rules for their appearance, install the HTTP Response Headers UI sub-module and visit its configuration page at Administration > Configuration > System >
+  HTTP Response Headers > List Rules (`admin/config/system/http_response_headers/list`) to add, edit, and/or remove headers and to set their visibility conditions.
 
- * To submit bug reports and feature suggestions, or to track changes:
-   https://www.drupal.org/project/issues/http_response_headers
+Typical use cases:
 
+1. Set 'Cache-Control' or 'Expires' header to set/reset cache behavior
+ of browser/cache servers.
+2. Set 'X-Frame-Options' to restrict your pages rendering on a frame.
+3. Set 'WWW-Authenticate' to set authentication to pages.
 
-REQUIREMENTS
-------------
+Note that if you set the Content-Security-Policy: frame-src header, you need to include your own site as an allowed host or it will break some functionality (e.g., AJAX file uploads).
 
-This module requires no modules outside of Drupal core.
-
-
-RECOMMENDED MODULES
--------------------
-
-To export/import header rules from an inc file:
- * Ctools - https://www.drupal.org/project/ctools
-
-
-INSTALLATION
-------------
-
- * Install the HTTP Response Headers module as you would normally install a
-   contributed Drupal module. Visit https://www.drupal.org/node/895232 for
-   further information.
-
-
-CONFIGURATION
+Documentation
 -------------
 
-    1. Navigate to Administration > Extend and enable the module and the HTTP
-       Response Headers UI module.
-    2. Navigate to Administration > Configuration > System > HTTP response
-       headers for configurations.
-    3. Select the "Settings" tab to enable and exclude headers. Save
-       configuration.
-    4. Select "List" to add a HTTP header. Save.
+Additional documentation is located in [the Wiki](https://github.com/backdrop-contrib/http_response_headers/wiki/Documentation).
 
-Use cases:
- * Case 1: Set 'Cache-Control' or 'Expires' header to set/reset cache behavior
-   of browser/cache servers.
- * Case 2: Set 'X-Frame-Options' to restrict your pages rendering on a frame.
- * Case 3: Set 'WWW-Authenticate' to set authentication to pages.
+Differences from Drupal 7
+-------------------------
 
+* All configuration information is now stored in config files rather than the db.
+* Import/export functionality formerly provided by CTools is no longer supported. Import/export functionality is now provided by Config Management.
+* Configuration page paths are different.
+* Automated tests have not yet been updated for Backdrop.
+* Drush support is not yet updated for Backdrop.
 
-KNOWN ISSUES/PROBLEMS
----------------------
+Issues
+------
 
- * The calculation for certain headers (e.g. Expires) happens internally and end
-   user may not aware of it. So entering 600 in the expires header value change
-   to ISO date format of 5 minutes from current time.
- * Doesn't work well with Drupal page cache.
+Bugs and feature requests should be reported in [the Issue Queue](https://github.com/backdrop-contrib/http_response_headers/issues).
 
-MAINTAINERS
------------
+Current Maintainers
+-------------------
 
- * Vijaya Chandran Mani (vijaycs85) - https://www.drupal.org/u/vijaycs85
- * Minnur Yunusov (minnur) - https://www.drupal.org/u/minnur
- * Drew Webber (mcdruid) - https://www.drupal.org/u/mcdruid
- * Malachy McConnell (mmcconnell) - https://www.drupal.org/u/mmcconnell
+- [Robert J. Lang (bugfolder)](https://github.com/bugfolder)
 
-Supporting organization:
+Credits
+-------
 
- * Eurostar - https://www.drupal.org/eurostar
+- Ported to Backdrop CMS by [Robert J. Lang (bugfolder)](https://github.com/bugfolder).
+- Drupal 7 version by [Vijaya Chandran Mani (vijaycs85)](https://www.drupal.org/u/vijaycs85)
+- Drupal maintainers:
+    * [Vijaya Chandran Mani (vijaycs85)](https://www.drupal.org/u/vijaycs85)
+    * [Minnur Yunusov (minnur)](https://www.drupal.org/u/minnur)
+    * [Drew Webber (mcdruid)](https://www.drupal.org/u/mcdruid)
+    * [Malachy McConnell (mmcconnell)](https://www.drupal.org/u/mmcconnell)
+- Drupal supporting organization:
+     * [Eurostar](https://www.drupal.org/eurostar)
+
+License
+-------
+
+This project is GPL v2 software.
+See the LICENSE.txt file in this directory for complete text.
+

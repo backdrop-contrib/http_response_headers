@@ -1,0 +1,6 @@
+[HttpResponseHeadersTestCase]
+name = Http Response Headers functionality test
+description = Add, edit and delete HTTP header rule.
+group = HTTP response headers
+file = http_response_headers.test
+

@@ -1,0 +1,53 @@
+<?php
+/**
+ * @file
+ * Contains hooks for the HTTP Response Headers UI module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function http_response_headers_ui_menu() {
+  $items['admin/config/system/http-response-headers/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $items['admin/config/system/http-response-headers/list'] = array(
+    'title' => 'List rules',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('http_response_headers_ui_list_form'),
+    'access arguments' => array('administer http response headers'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'http_response_headers_ui.admin.inc',
+    'weight' => 1,
+  );
+  $items['admin/config/system/http-response-headers/add'] = array(
+    'title' => 'Add rule',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('http_response_headers_ui_rule_form'),
+    'access arguments' => array('administer http response headers'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'http_response_headers_ui.admin.inc',
+    'weight' => 2,
+  );
+  $items['admin/config/system/http-response-headers/edit/%'] = array(
+    'title' => 'Edit rule',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('http_response_headers_ui_rule_form', 5),
+    'access arguments' => array('administer http response headers'),
+    'type' => MENU_CALLBACK,
+    'file' => 'http_response_headers_ui.admin.inc',
+    'weight' => 2,
+  );
+  $items['admin/config/system/http-response-headers/delete/%'] = array(
+    'title' => 'Delete rule',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('http_response_headers_ui_rule_delete_confirm_form', 5),
+    'access arguments' => array('administer http response headers'),
+    'type' => MENU_CALLBACK,
+    'file' => 'http_response_headers_ui.admin.inc',
+  );
+
+  return $items;
+}

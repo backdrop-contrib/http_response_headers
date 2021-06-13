@@ -1,11 +1,10 @@
 <?php
-
 /**
  * @file
  * Tests for http_response_headers_ui.module.
  */
 
-class HttpResponseHeadersUITestCase extends DrupalWebTestCase {
+class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
   protected $adminUser;
 
   /**
@@ -196,29 +195,18 @@ class HttpResponseHeadersUITestCase extends DrupalWebTestCase {
     $this->createHeaderRule(strtolower($name), $name, $header, $header_value, $visibility_options);
 
     // Get user page to check Last-Modified has
-    // 'Mon, 14 Oct 2013 15:42:25 GMT' format value, instead of 3600.
-    // @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified
+    // 'Mon, 14 Oct 2013 15:42:25 +0000' format value, instead of 3600.
     $this->drupalGet('user');
     $headers = $this->drupalGetHeaders();
-    $rfc7231 = preg_match(
-      '/[A-Z][a-z]{2}, [0-9]{1,2} [A-Z][a-z]{2} [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} GMT/',
-      $headers[strtolower($header)]
-    );
-    $this->assertTrue((bool) $rfc7231, 'Last-Modified header was applied to user pages.');
+    $this->assertEqual($headers[strtolower($header)], http_response_headers_last_modified_callback($header_value), 'Last-Modified header was applied to user pages.');
 
-    // Check the Last-Modified header matched the Date header. This is somewhat
-    // reliant on the webserver, but most seem to follow the spec.
-    // @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
-    // N.B. this test is only valid for an uncached response.
-    // @see http_response_headers_last_modified_callback()
-    $this->assertEqual($headers[strtolower($header)], $headers[strtolower('Date')], 'Last-Modified header matched the Date response header.');
   }
 
   /**
    * Setup default configuration for HTTP response headers.
    */
   protected function setupDefaultConfiguration() {
-    $edit['http_response_headers_allowed_headers[]'] = array(
+    $edit['allowed_headers[]'] = array(
       'Cache-Control' => 'Cache-Control',
       'Expires' => 'Expires',
       'X-Frame-Options' => 'X-Frame-Options',
@@ -226,7 +214,7 @@ class HttpResponseHeadersUITestCase extends DrupalWebTestCase {
     );
 
     // Make sure admin pages are excluded globally.
-    $edit['http_response_headers_exclude_pages'] = 'admin*';
+    $edit['exclude_pages'] = 'admin*';
 
     $this->drupalPost('admin/config/system/http-response-headers/settings', $edit, t('Save configuration'));
   }

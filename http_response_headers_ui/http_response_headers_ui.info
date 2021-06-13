@@ -1,0 +1,8 @@
+name = HTTP Response Headers UI
+description = Allows customization of HTTP response headers through the UI.
+backdrop = 1.x
+type = module
+
+dependencies[] = http_response_headers
+
+configure = admin/config/system/http-response-headers/list
