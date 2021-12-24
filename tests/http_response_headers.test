@@ -8,31 +8,17 @@ class HttpResponseHeadersTestCase extends BackdropWebTestCase {
   protected $adminUser;
 
   /**
-   * Test case meta information.
-   *
-   * @return array
-   *   An array of test case details.
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Http Response Headers functionality test',
-      'description' => 'Add, edit and delete HTTP header rule.',
-      'group' => 'HTTP response headers',
-    );
-  }
-
-  /**
    * Sets up test environment.
    */
   protected function setUp() {
     parent::setUp('http_response_headers');
 
     // Create and log in an administrative user.
-    $this->adminUser = $this->drupalCreateUser(array(
+    $this->adminUser = $this->backdropCreateUser(array(
       'administer http response headers',
       'access administration pages',
     ));
-    $this->drupalLogin($this->adminUser);
+    $this->backdropLogin($this->adminUser);
 
     // Set up default header list on configuration page.
     $this->setupDefaultConfiguration();
@@ -53,22 +39,22 @@ class HttpResponseHeadersTestCase extends BackdropWebTestCase {
     $header_value = 'max-age=3600';
     $this->createHeaderRule(strtolower($name), $name, $header, $header_value, $visibility_options);
 
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertEqual($headers[strtolower($header)], $header_value, 'Header rule was applied on the front page.');
 
-    $this->drupalGet('user');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('user');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to block visibility rules.');
 
-    $this->drupalGet('USER/' . $this->adminUser->uid);
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('USER/' . $this->adminUser->uid);
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to header rule visibility rules regardless of path case.');
 
     // Confirm that the rule is not applied to anonymous users.
-    $this->drupalLogout();
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropLogout();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied to anonymous users.');
   }
 
@@ -84,18 +70,18 @@ class HttpResponseHeadersTestCase extends BackdropWebTestCase {
     $header_value = 'max-age=3600';
     $this->createHeaderRule(strtolower($name), $name, $header, $header_value, $visibility_options);
 
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to visibility rules.');
 
-    $this->drupalGet('user');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('user');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to visibility rules regardless of path case.');
 
     // Confirm that the header rule is not applied to anonymous users.
-    $this->drupalLogout();
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropLogout();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied to anonymous user.');
   }
 
@@ -115,9 +101,9 @@ class HttpResponseHeadersTestCase extends BackdropWebTestCase {
 
     // Get user page to check Expires has
     // 'Mon, 14 Oct 2013 15:42:25 +0000' format value, instead of 3600.
-    $this->drupalGet('user');
+    $this->backdropGet('user');
     $expected_value = http_response_headers_expires_callback($header_value);
-    $headers = $this->drupalGetHeaders();
+    $headers = $this->backdropGetHeaders();
     $this->assertEqual($headers[strtolower($header)], $expected_value, 'Expires header was applied to user pages.');
 
     // Create a header rule with 'Last-Modified' header.
@@ -132,9 +118,9 @@ class HttpResponseHeadersTestCase extends BackdropWebTestCase {
 
     // Get user page to check Last-Modified has
     // 'Mon, 14 Oct 2013 15:42:25 +0000' format value, instead of 3600.
-    $this->drupalGet('user');
+    $this->backdropGet('user');
     $expected_value = http_response_headers_last_modified_callback($header_value);
-    $headers = $this->drupalGetHeaders();
+    $headers = $this->backdropGetHeaders();
     $this->assertEqual($headers[strtolower($header)], $expected_value, 'Last-Modified header was applied to user pages.');
 
   }

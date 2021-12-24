@@ -28,11 +28,11 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     parent::setUp('http_response_headers_ui');
 
     // Create and log in an administrative user.
-    $this->adminUser = $this->drupalCreateUser(array(
+    $this->adminUser = $this->backdropCreateUser(array(
       'administer http response headers',
       'access administration pages',
     ));
-    $this->drupalLogin($this->adminUser);
+    $this->backdropLogin($this->adminUser);
 
     // Set up default header list on configuration page.
     $this->setupDefaultConfiguration();
@@ -44,7 +44,7 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
   public function testHeaderRuleAdminUI() {
 
     // Confirm that the add rule link appears on header rule overview pages.
-    $this->drupalGet('admin/config/system/http-response-headers');
+    $this->backdropGet('admin/config/system/http-response-headers');
     $this->assertRaw(l(t('Add'), 'admin/config/system/http-response-headers/add'), 'Add header rule link is present on overview page.');
 
     // Add a new header rule by filling out the input
@@ -72,7 +72,7 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     $this->assertEqual('max-age=3600', $data->header_value, 'http_response_headers_rule_load() provides correct header details.');
 
     // Verify presence of configure and delete links for header rule.
-    $this->drupalGet('admin/config/system/http-response-headers');
+    $this->backdropGet('admin/config/system/http-response-headers');
     $this->assertLinkByHref('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', 0, 'Header rule configure link found.');
     $this->assertLinkByHref('admin/config/system/http-response-headers/list/' . $machine_name . '/delete', 0, 'Header rule delete link found.');
 
@@ -80,7 +80,7 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     // to verify delete functionality.
     $edit = array();
     $edit['roles[' . DRUPAL_AUTHENTICATED_RID . ']'] = TRUE;
-    $this->drupalPost('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', $edit, t('Save'));
+    $this->backdropPost('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', $edit, t('Save'));
 
     // Delete the created header rule  & verify that it's been deleted
     // and no longer applying on the page.
@@ -109,24 +109,24 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     $edit['pages'] = 'user*';
     $edit['visibility'] = HTTP_RESPONSE_HEADERS_VISIBILITY_NOTLISTED;
     $edit['roles[' . DRUPAL_AUTHENTICATED_RID . ']'] = TRUE;
-    $this->drupalPost('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', $edit, t('Save'));
+    $this->backdropPost('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', $edit, t('Save'));
 
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertEqual($headers[strtolower($header)], $header_value, 'Header rule was applied on the front page.');
 
-    $this->drupalGet('user');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('user');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to block visibility rules.');
 
-    $this->drupalGet('USER/' . $this->adminUser->uid);
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('USER/' . $this->adminUser->uid);
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to header rule visibility rules regardless of path case.');
 
     // Confirm that the rule is not applied to anonymous users.
-    $this->drupalLogout();
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropLogout();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied to anonymous users.');
   }
 
@@ -147,20 +147,20 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     // authenticated users.
     $edit = array();
     $edit['visibility'] = BLOCK_VISIBILITY_LISTED;
-    $this->drupalPost('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', $edit, t('Save'));
+    $this->backdropPost('admin/config/system/http-response-headers/list/' . $machine_name . '/edit', $edit, t('Save'));
 
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to visibility rules.');
 
-    $this->drupalGet('user');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('user');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied according to visibility rules regardless of path case.');
 
     // Confirm that the header rule is not applied to anonymous users.
-    $this->drupalLogout();
-    $this->drupalGet('');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropLogout();
+    $this->backdropGet('');
+    $headers = $this->backdropGetHeaders();
     $this->assertNotEqual($headers[strtolower($header)], $header_value, 'Header rule was not applied to anonymous user.');
   }
 
@@ -180,8 +180,8 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
 
     // Get user page to check Expires has
     // 'Mon, 14 Oct 2013 15:42:25 +0000' format value, instead of 3600.
-    $this->drupalGet('user');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('user');
+    $headers = $this->backdropGetHeaders();
     $this->assertEqual($headers[strtolower($header)], http_response_headers_expires_callback($header_value), 'Expires header was applied to user pages.');
 
     // Create a header rule with 'Last-Modified' header.
@@ -196,8 +196,8 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
 
     // Get user page to check Last-Modified has
     // 'Mon, 14 Oct 2013 15:42:25 +0000' format value, instead of 3600.
-    $this->drupalGet('user');
-    $headers = $this->drupalGetHeaders();
+    $this->backdropGet('user');
+    $headers = $this->backdropGetHeaders();
     $this->assertEqual($headers[strtolower($header)], http_response_headers_last_modified_callback($header_value), 'Last-Modified header was applied to user pages.');
 
   }
@@ -216,7 +216,7 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     // Make sure admin pages are excluded globally.
     $edit['exclude_pages'] = 'admin*';
 
-    $this->drupalPost('admin/config/system/http-response-headers/settings', $edit, t('Save configuration'));
+    $this->backdropPost('admin/config/system/http-response-headers/settings', $edit, t('Save configuration'));
   }
 
   /**
@@ -242,7 +242,7 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
     $header_rule['header'] = $header;
     $header_rule['header_value'] = $header_value;
     $header_rule += $visibility_options;
-    $this->drupalPost('admin/config/system/http-response-headers/add', $header_rule, t('Save'));
+    $this->backdropPost('admin/config/system/http-response-headers/add', $header_rule, t('Save'));
     return $machine_name;
   }
 
@@ -253,9 +253,9 @@ class HttpResponseHeadersUITestCase extends BackdropWebTestCase {
    *   A string rule ID.
    */
   protected function deleteHeaderRule($machine_name) {
-    $this->drupalGet('admin/config/system/http-response-headers');
+    $this->backdropGet('admin/config/system/http-response-headers');
     $this->clickLink(t('Delete'));
-    $this->drupalPost('admin/config/system/http-response-headers/list/' . $machine_name . '/delete', array(), t('Delete'));
+    $this->backdropPost('admin/config/system/http-response-headers/list/' . $machine_name . '/delete', array(), t('Delete'));
     $this->assertNoRaw($machine_name, 'Header rule no longer appears on page.');
 
   }
