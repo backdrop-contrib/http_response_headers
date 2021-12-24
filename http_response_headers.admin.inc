@@ -21,9 +21,8 @@ function http_response_headers_settings_form($form, &$from_state) {
 
   if (!module_exists('http_response_headers_ui')) {
     $form['info'] = array(
+      '#type' => 'help',
       '#markup' => t('To add, remove, or edit headers, enable the HTTP Response Headers UI module.'),
-      '#prefix' => '<p>',
-      '#suffix' => '</p>',
     );
   }
 
