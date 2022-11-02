@@ -25,11 +25,6 @@ Typical use cases:
 
 Note that if you set the Content-Security-Policy: frame-src header, you need to include your own site as an allowed host or it will break some functionality (e.g., AJAX file uploads).
 
-Documentation
--------------
-
-Additional documentation is located in [the Wiki](https://github.com/backdrop-contrib/http_response_headers/wiki/Documentation).
-
 Differences from Drupal 7
 -------------------------
 
